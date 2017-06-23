@@ -30,19 +30,23 @@ class Douban(object):
             elif hasattr(e,"reason"):
                 print("Reason: %s"%e.code)
 
-    def find_title(self,my_page):
+    def find_title(self,my_page,Lan):
+        if Lan=='Y':
+            Lan_num=-1
+        else:
+            Lan_num=0
         temp_data=[]
         move_items=re.findall(r'<span.*?class="title">(.*?)</span>',my_page)
         for index,item in enumerate(move_items):
-            if item.find("&nbsp;/&nbsp;")==-1:
+            if item.find("&nbsp;/&nbsp;")==Lan_num:
                 temp_data.append("Top"+str(self.top_num)+" "+item.replace('&nbsp;/&nbsp;',''))
                 self.top_num+=1
         self.datas.extend(temp_data)
 
-    def start_spider(self):
+    def start_spider(self,Lan):
         while self.page_num<=10:
             my_page=self.get_page(self.page_num)
-            self.find_title(my_page)
+            self.find_title(my_page,Lan)
             self.page_num+=1
 
 
@@ -53,7 +57,8 @@ def main():
           "豆瓣TOP250\n"
           "##########################")
     Spider=Douban()
-    Spider.start_spider()
+    Lan=input("Chinese?(Y/N)")
+    Spider.start_spider(Lan)
     for item in Spider.datas:
         print(item)
     print("#########################\n"
